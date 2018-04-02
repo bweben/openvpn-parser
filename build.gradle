@@ -1,5 +1,9 @@
 buildscript {
-    ext.kotlin_version = '1.2.31'
+    ext {
+        kotlin_version = '1.2.31'
+        junit_platform_version = '1.1.0'
+        junit_jupiter_version = '5.1.0'
+    }
 
     repositories {
         mavenCentral()
@@ -7,12 +11,12 @@ buildscript {
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.junit.platform:junit-platform-gradle-plugin:$junit_platform_version"
     }
 }
 
-plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.2.31"
-}
+apply plugin: "kotlin"
+apply plugin: "org.junit.platform.gradle.plugin"
 
 repositories {
     mavenCentral()
@@ -20,4 +24,13 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+    // JUnit Jupiter API and TestEngine implementation
+    testCompile("org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}")
+    testRuntime("org.junit.jupiter:junit-jupiter-engine:${junit_jupiter_version}")
+
+    // Only needed to run tests in an (IntelliJ) IDE(A) that bundles an older version
+    testRuntime("org.junit.platform:junit-platform-launcher:${junit_platform_version}")
+
+    testCompile 'org.assertj:assertj-core:3.9.0'
 }
