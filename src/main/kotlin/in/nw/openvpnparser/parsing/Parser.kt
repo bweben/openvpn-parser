@@ -6,7 +6,6 @@ import `in`.nw.openvpnparser.model.OpenVPNRoutingTableEntity
 import `in`.nw.openvpnparser.model.OpenVPNStat
 import `in`.nw.openvpnparser.util.OpenVPNParseType
 import java.time.LocalDateTime
-import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -63,7 +62,7 @@ class Parser {
 
         if (split[0].toLowerCase() != "virtual address") {
             val date = LocalDateTime.parse(split[3], DATE_TIME_FORMATTER)
-            routingTableEntities.add(OpenVPNRoutingTableEntity(split[0], split[1], split[2], Date.from(date.atZone(ZoneId.systemDefault()).toInstant())))
+            routingTableEntities.add(OpenVPNRoutingTableEntity(split[0], split[1], split[2], date))
         }
 
         return routingTableEntities
@@ -74,10 +73,10 @@ class Parser {
 
         if (split[0].toLowerCase() == "updated") {
             val date = LocalDateTime.parse(split[1], DATE_TIME_FORMATTER)
-            clientProperties.updated = Date.from(date.atZone(ZoneId.systemDefault()).toInstant())
+            clientProperties.updated = date
         } else if (split[0].toLowerCase() != "common name") {
             val date = LocalDateTime.parse(split[4], DATE_TIME_FORMATTER)
-            clientProperties.clientEntities.add(OpenVPNClientEntity(split[0], split[1], split[2].toInt(), split[3].toInt(), Date.from(date.atZone(ZoneId.systemDefault()).toInstant())))
+            clientProperties.clientEntities.add(OpenVPNClientEntity(split[0], split[1], split[2].toInt(), split[3].toInt(), date))
         }
 
         return clientProperties
