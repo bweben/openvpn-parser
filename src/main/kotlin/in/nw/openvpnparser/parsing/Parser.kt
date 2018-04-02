@@ -11,8 +11,8 @@ import java.util.*
 
 class Parser {
     companion object {
-        private val DATE_TIME_FORMATTER =
-                DateTimeFormatter.ofPattern("EE MMM  d HH:mm:ss yyyy", Locale.ENGLISH)
+        private val DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("EE MMM d HH:mm:ss yyyy", Locale.ENGLISH)
+        private val MULTIPLE_SPACE_REGEX = Regex("\\s+")
     }
 
     fun parse(str: String): OpenVPNStat? {
@@ -103,4 +103,7 @@ class Parser {
 
         return null
     }
+
+    private fun fixDateStringSpaces(originalDateString: String) =
+            MULTIPLE_SPACE_REGEX.replace(originalDateString, " ")
 }

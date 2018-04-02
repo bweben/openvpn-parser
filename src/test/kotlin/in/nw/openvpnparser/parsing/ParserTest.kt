@@ -29,46 +29,51 @@ END"""
 
     @Test
     fun `returns null when invalid input is given`() {
-        assertThat(Parser().parse("somethininvalid")).isNull()
+        assertThat(Parser().parse("somethininvalid"))
+                .isNull()
     }
 
     @Test
     fun `returns notNull when valid input is given`() {
-        assertThat(openVPNStat).isNotNull()
+        assertThat(openVPNStat)
+                .isNotNull()
     }
 
     @Test
     fun `returns updatedTime when valid input is given`() {
-        assertThat(openVPNStat?.clientStats?.updated).isEqualTo(LocalDateTime.of(2018, 4, 2, 15, 53, 10))
+        assertThat(openVPNStat?.clientStats?.updated)
+                .isEqualTo(LocalDateTime.of(2018, 4, 2, 15, 53, 10))
     }
 
     @Test
     fun `returns clientEntities when valid input is given`() {
-        assertThat(openVPNStat?.clientStats?.clientEntities).isEqualTo(
-                mutableListOf(OpenVPNClientEntity(
+        assertThat(openVPNStat?.clientStats?.clientEntities).isEqualTo(listOf(
+                OpenVPNClientEntity(
                         "PegNu VPN LP-2 Client",
                         "194.230.159.153:60196",
                         8633,
                         6066,
                         LocalDateTime.of(2018, 4, 2, 15, 52, 59)
-                )))
+                )
+        ))
     }
 
     @Test
     fun `returns routingTableEntities when valid input is given`() {
-        assertThat(openVPNStat?.routingTableEntities).isEqualTo(
-                mutableListOf(OpenVPNRoutingTableEntity(
+        assertThat(openVPNStat?.routingTableEntities).isEqualTo(listOf(
+                OpenVPNRoutingTableEntity(
                         "2a02:168:a807:babe::1000",
                         "PegNu VPN LP-2 Client",
                         "194.230.159.153:60196",
                         LocalDateTime.of(2018, 4, 2, 15, 53, 2)
-                ), OpenVPNRoutingTableEntity(
+                ),
+                OpenVPNRoutingTableEntity(
                         "10.99.98.2",
                         "PegNu VPN LP-2 Client",
                         "194.230.159.153:60196",
                         LocalDateTime.of(2018, 4, 2, 15, 53, 8)
-                ))
-        )
+                )
+        ))
     }
 
     @Test
