@@ -11,8 +11,8 @@ import java.util.*
 
 class Parser {
     companion object {
-        private val DATE_TIME_FORMATTER =
-                DateTimeFormatter.ofPattern("EE MMM d HH:mm:ss yyyy", Locale.ENGLISH)
+        private val DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("EE MMM d HH:mm:ss yyyy", Locale.ENGLISH)
+        private val MULTIPLE_SPACE_REGEX = Regex("\\s+")
     }
 
     fun parse(str: String): OpenVPNStat? {
@@ -61,7 +61,7 @@ class Parser {
         val split = str.split(",")
 
         if (split[0].toLowerCase() != "virtual address") {
-            val date = LocalDateTime.parse(split[3], DATE_TIME_FORMATTER)
+            val date = LocalDateTime.parse(fixDateStringSpaces(split[3]), DATE_TIME_FORMATTER)
             routingTableEntities.add(OpenVPNRoutingTableEntity(split[0], split[1], split[2], date))
         }
 
@@ -72,13 +72,16 @@ class Parser {
         val split = str.split(",")
 
         if (split[0].toLowerCase() == "updated") {
-            val date = LocalDateTime.parse(split[1], DATE_TIME_FORMATTER)
+            val date = LocalDateTime.parse(fixDateStringSpaces(split[1]), DATE_TIME_FORMATTER)
             clientProperties.updated = date
         } else if (split[0].toLowerCase() != "common name") {
-            val date = LocalDateTime.parse(split[4], DATE_TIME_FORMATTER)
+            val date = LocalDateTime.parse(fixDateStringSpaces(split[4]), DATE_TIME_FORMATTER)
             clientProperties.clientEntities.add(OpenVPNClientEntity(split[0], split[1], split[2].toInt(), split[3].toInt(), date))
         }
 
         return clientProperties
     }
+
+    private fun fixDateStringSpaces(originalDateString: String) =
+            MULTIPLE_SPACE_REGEX.replace(originalDateString, " ")
 }
