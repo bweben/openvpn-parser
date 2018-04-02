@@ -19,8 +19,9 @@ class Parser {
         val lines = str.split("\n")
         var parseType = OpenVPNParseType.NONE
 
-        var clientProperties = OpenVPNClientProperties(null, mutableListOf())
-        var routingTableEntities: MutableList<OpenVPNRoutingTableEntity> = mutableListOf()
+        val clientPropertiesList = mutableListOf<OpenVPNClientEntity>()
+        var updatedDate: LocalDateTime? = null
+        val routingTableEntities: MutableList<OpenVPNRoutingTableEntity> = mutableListOf()
         var maxBcastMcastQueueLength = 0
 
         for (line in lines) {
@@ -31,9 +32,24 @@ class Parser {
                 "end" -> parseType = OpenVPNParseType.END
                 else -> {
                     when (parseType) {
-                        OpenVPNParseType.CLIENTLIST -> clientProperties = getClientProperties(line, clientProperties)
-                        OpenVPNParseType.ROUTINGTABLE -> routingTableEntities = getRoutingProperties(line, routingTableEntities)
-                        OpenVPNParseType.GLOBALSTATS -> maxBcastMcastQueueLength = getGlobalProperties(line)
+                        OpenVPNParseType.CLIENTLIST -> {
+                            val clientUpdated = getClientUpdated(line)
+                            if (clientUpdated != null) {
+                                updatedDate = clientUpdated
+                            }
+
+                            val clientListProperty = getClientListProperty(line)
+                            if (clientListProperty != null) {
+                                clientPropertiesList.add(clientListProperty)
+                            }
+                        }
+                        OpenVPNParseType.ROUTINGTABLE -> {
+                            val routingProperty = getRoutingProperty(line)
+                            if (routingProperty != null) {
+                                routingTableEntities.add(routingProperty)
+                            }
+                        }
+                        OpenVPNParseType.GLOBALSTATS -> maxBcastMcastQueueLength = getGloablProperty(line)
                         else -> {
                         }
                     }
@@ -41,13 +57,13 @@ class Parser {
             }
         }
         if (parseType == OpenVPNParseType.END) {
-            return OpenVPNStat(clientProperties, routingTableEntities, maxBcastMcastQueueLength)
+            return OpenVPNStat(OpenVPNClientProperties(updatedDate, clientPropertiesList), routingTableEntities, maxBcastMcastQueueLength)
         }
 
         return null
     }
 
-    private fun getGlobalProperties(str: String): Int {
+    private fun getGloablProperty(str: String): Int {
         val split = str.split(",")
 
         if (split[0].toLowerCase() == "max bcast/mcast queue length") {
@@ -57,29 +73,35 @@ class Parser {
         return -1
     }
 
-    private fun getRoutingProperties(str: String, routingTableEntities: MutableList<OpenVPNRoutingTableEntity>): MutableList<OpenVPNRoutingTableEntity> {
+    private fun getRoutingProperty(str: String): OpenVPNRoutingTableEntity? {
         val split = str.split(",")
 
         if (split[0].toLowerCase() != "virtual address") {
             val date = LocalDateTime.parse(fixDateStringSpaces(split[3]), DATE_TIME_FORMATTER)
-            routingTableEntities.add(OpenVPNRoutingTableEntity(split[0], split[1], split[2], date))
+            return OpenVPNRoutingTableEntity(split[0], split[1], split[2], date)
         }
 
-        return routingTableEntities
+        return null
     }
 
-    private fun getClientProperties(str: String, clientProperties: OpenVPNClientProperties): OpenVPNClientProperties {
+    private fun getClientUpdated(str: String): LocalDateTime? {
         val split = str.split(",")
 
-        if (split[0].toLowerCase() == "updated") {
-            val date = LocalDateTime.parse(fixDateStringSpaces(split[1]), DATE_TIME_FORMATTER)
-            clientProperties.updated = date
-        } else if (split[0].toLowerCase() != "common name") {
+        if (split[0].toLowerCase() == "updated" && split.size == 2) {
+            return LocalDateTime.parse(fixDateStringSpaces(split[1]), DATE_TIME_FORMATTER)
+        }
+        return null
+    }
+
+    private fun getClientListProperty(str: String): OpenVPNClientEntity? {
+        val split = str.split(",")
+
+        if (split[0].toLowerCase() != "common name" && split.size == 5) {
             val date = LocalDateTime.parse(fixDateStringSpaces(split[4]), DATE_TIME_FORMATTER)
-            clientProperties.clientEntities.add(OpenVPNClientEntity(split[0], split[1], split[2].toInt(), split[3].toInt(), date))
+            return OpenVPNClientEntity(split[0], split[1], split[2].toInt(), split[3].toInt(), date)
         }
 
-        return clientProperties
+        return null
     }
 
     private fun fixDateStringSpaces(originalDateString: String) =
