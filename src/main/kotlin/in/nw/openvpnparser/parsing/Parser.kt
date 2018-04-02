@@ -1,6 +1,9 @@
 package `in`.nw.openvpnparser.parsing
 
-import `in`.nw.openvpnparser.model.*
+import `in`.nw.openvpnparser.model.OpenVPNClientEntity
+import `in`.nw.openvpnparser.model.OpenVPNClientProperties
+import `in`.nw.openvpnparser.model.OpenVPNRoutingTableEntity
+import `in`.nw.openvpnparser.model.OpenVPNStat
 import `in`.nw.openvpnparser.util.OpenVPNParseType
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -8,10 +11,13 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 class Parser {
-    private val pattern = "EE MMM  d HH:mm:ss yyyy"
+    companion object {
+        private val DATE_TIME_FORMATTER =
+                DateTimeFormatter.ofPattern("EE MMM d HH:mm:ss yyyy", Locale.ENGLISH)
+    }
 
     fun parse(str: String): OpenVPNStat? {
-        var lines = str.split("\n")
+        val lines = str.split("\n")
         var parseType = OpenVPNParseType.NONE
 
         var clientProperties = OpenVPNClientProperties(null, mutableListOf())
@@ -43,32 +49,37 @@ class Parser {
     }
 
     private fun getGlobalProperties(str: String): Int {
-        var split = str.split(",")
+        val split = str.split(",")
+
         if (split[0].toLowerCase() == "max bcast/mcast queue length") {
             return split[1].toInt()
         }
+
         return -1
     }
 
     private fun getRoutingProperties(str: String, routingTableEntities: MutableList<OpenVPNRoutingTableEntity>): MutableList<OpenVPNRoutingTableEntity> {
-        var split = str.split(",")
-        if (split[0].toLowerCase() != "virtual address") {
+        val split = str.split(",")
 
-            var date = LocalDateTime.parse(split[3], DateTimeFormatter.ofPattern(pattern, Locale.ENGLISH))
-            routingTableEntities.add(OpenVPNRoutingTableEntity(split[0], split[1], split[2], Date.from(date.atZone(ZoneId.systemDefault()).toInstant())));
+        if (split[0].toLowerCase() != "virtual address") {
+            val date = LocalDateTime.parse(split[3], DATE_TIME_FORMATTER)
+            routingTableEntities.add(OpenVPNRoutingTableEntity(split[0], split[1], split[2], Date.from(date.atZone(ZoneId.systemDefault()).toInstant())))
         }
-        return routingTableEntities;
+
+        return routingTableEntities
     }
 
     private fun getClientProperties(str: String, clientProperties: OpenVPNClientProperties): OpenVPNClientProperties {
-        var split = str.split(",")
+        val split = str.split(",")
+
         if (split[0].toLowerCase() == "updated") {
-            var date = LocalDateTime.parse(split[1], DateTimeFormatter.ofPattern(pattern, Locale.ENGLISH))
+            val date = LocalDateTime.parse(split[1], DATE_TIME_FORMATTER)
             clientProperties.updated = Date.from(date.atZone(ZoneId.systemDefault()).toInstant())
         } else if (split[0].toLowerCase() != "common name") {
-            var date = LocalDateTime.parse(split[4], DateTimeFormatter.ofPattern(pattern, Locale.ENGLISH))
+            val date = LocalDateTime.parse(split[4], DATE_TIME_FORMATTER)
             clientProperties.clientEntities.add(OpenVPNClientEntity(split[0], split[1], split[2].toInt(), split[3].toInt(), Date.from(date.atZone(ZoneId.systemDefault()).toInstant())))
         }
+
         return clientProperties
     }
 }
