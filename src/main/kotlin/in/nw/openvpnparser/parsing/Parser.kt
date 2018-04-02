@@ -12,7 +12,7 @@ import java.util.*
 class Parser {
     companion object {
         private val DATE_TIME_FORMATTER =
-                DateTimeFormatter.ofPattern("EE MMM d HH:mm:ss yyyy", Locale.ENGLISH)
+                DateTimeFormatter.ofPattern("EE MMM  d HH:mm:ss yyyy", Locale.ENGLISH)
     }
 
     fun parse(str: String): OpenVPNStat? {
