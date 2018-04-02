@@ -77,7 +77,7 @@ class Parser {
         val split = str.split(",")
 
         if (split[0].toLowerCase() != "virtual address") {
-            val date = LocalDateTime.parse(split[3], DATE_TIME_FORMATTER)
+            val date = LocalDateTime.parse(fixDateStringSpaces(split[3]), DATE_TIME_FORMATTER)
             return OpenVPNRoutingTableEntity(split[0], split[1], split[2], date)
         }
 
@@ -88,7 +88,7 @@ class Parser {
         val split = str.split(",")
 
         if (split[0].toLowerCase() == "updated" && split.size == 2) {
-            return LocalDateTime.parse(split[1], DATE_TIME_FORMATTER)
+            return LocalDateTime.parse(fixDateStringSpaces(split[1]), DATE_TIME_FORMATTER)
         }
         return null
     }
@@ -97,7 +97,7 @@ class Parser {
         val split = str.split(",")
 
         if (split[0].toLowerCase() != "common name" && split.size == 5) {
-            val date = LocalDateTime.parse(split[4], DATE_TIME_FORMATTER)
+            val date = LocalDateTime.parse(fixDateStringSpaces(split[4]), DATE_TIME_FORMATTER)
             return OpenVPNClientEntity(split[0], split[1], split[2].toInt(), split[3].toInt(), date)
         }
 
