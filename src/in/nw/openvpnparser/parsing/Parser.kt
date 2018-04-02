@@ -22,13 +22,13 @@ class Parser {
             when (line.toLowerCase().trim()) {
                 "openvpn client list" -> parseType = OpenVPNParseType.CLIENTLIST
                 "routing table" -> parseType = OpenVPNParseType.ROUTINGTABLE
-                "global stats" -> parseType = OpenVPNParseType.GLOABLSTATS
+                "global stats" -> parseType = OpenVPNParseType.GLOBALSTATS
                 "end" -> parseType = OpenVPNParseType.END
                 else -> {
                     when (parseType) {
                         OpenVPNParseType.CLIENTLIST -> clientProperties = getClientProperties(line, clientProperties)
                         OpenVPNParseType.ROUTINGTABLE -> routingTableEntities = getRoutingProperties(line, routingTableEntities)
-                        OpenVPNParseType.GLOABLSTATS -> maxBcastMcastQueueLength = getGlobalProperties(line)
+                        OpenVPNParseType.GLOBALSTATS -> maxBcastMcastQueueLength = getGlobalProperties(line)
                         else -> {
                         }
                     }

@@ -4,6 +4,6 @@ enum class OpenVPNParseType {
     NONE,
     CLIENTLIST,
     ROUTINGTABLE,
-    GLOABLSTATS,
+    GLOBALSTATS,
     END
 }
