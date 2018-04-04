@@ -1,6 +1,6 @@
-package `in`.nw.openvpnparser
+package li.naw.openvpnparser
 
-import `in`.nw.openvpnparser.parsing.Parser
+import li.naw.openvpnparser.parsing.Parser
 
 fun main(args: Array<String>) {
     for (arg in args) {

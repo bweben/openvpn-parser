@@ -1,4 +1,4 @@
-package `in`.nw.openvpnparser.model
+package li.naw.openvpnparser.model
 
 import java.time.LocalDateTime
 

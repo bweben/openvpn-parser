@@ -1,10 +1,10 @@
-package `in`.nw.openvpnparser.parsing
+package li.naw.openvpnparser.parsing
 
-import `in`.nw.openvpnparser.model.OpenVPNClientEntity
-import `in`.nw.openvpnparser.model.OpenVPNClientProperties
-import `in`.nw.openvpnparser.model.OpenVPNRoutingTableEntity
-import `in`.nw.openvpnparser.model.OpenVPNStat
-import `in`.nw.openvpnparser.util.OpenVPNParseType
+import li.naw.openvpnparser.model.OpenVPNClientEntity
+import li.naw.openvpnparser.model.OpenVPNClientProperties
+import li.naw.openvpnparser.model.OpenVPNRoutingTableEntity
+import li.naw.openvpnparser.model.OpenVPNStat
+import li.naw.openvpnparser.util.OpenVPNParseType
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*

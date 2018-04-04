@@ -1,8 +1,8 @@
-package `in`.nw.openvpnparser.parsing
+package li.naw.openvpnparser.parsing
 
-import `in`.nw.openvpnparser.model.OpenVPNClientEntity
-import `in`.nw.openvpnparser.model.OpenVPNRoutingTableEntity
-import `in`.nw.openvpnparser.model.OpenVPNStat
+import li.naw.openvpnparser.model.OpenVPNClientEntity
+import li.naw.openvpnparser.model.OpenVPNRoutingTableEntity
+import li.naw.openvpnparser.model.OpenVPNStat
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

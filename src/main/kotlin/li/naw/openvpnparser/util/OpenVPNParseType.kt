@@ -1,4 +1,4 @@
-package `in`.nw.openvpnparser.util
+package li.naw.openvpnparser.util
 
 enum class OpenVPNParseType {
     NONE,
